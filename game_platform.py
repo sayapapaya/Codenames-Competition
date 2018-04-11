@@ -143,12 +143,12 @@ class Codenames(object):
         print('')
 
     def print_remaining_words(self):
-        print('remaining p1 words:\n' + '\n'.join(w for w, guessed in self.game_board if not guessed and
-                                                  self.game_board[guessed] == WordType.P1))
-        print('remaining p2 words:\n' + '\n'.join(w for w, guessed in self.game_board if not guessed and
-                                                  self.game_board[guessed] == WordType.P2))
-        print('spy word:\n' + '\n'.join(w for w, guessed in self.game_board if not guessed and
-                                                  self.game_board[guessed] == WordType.P2))
+        print('remaining p1 words:\n' + '\n'.join(w for w in self.game_board if not self.game_state[w] and
+                                                  self.game_board[w] == WordType.P1))
+        print('remaining p2 words:\n' + '\n'.join(w for w in self.game_board if not self.game_state[w] and
+                                                  self.game_board[w] == WordType.P2))
+        print('spy word:\n' + '\n'.join(w for w in self.game_board if not self.game_state[w] and
+                                                  self.game_board[w] == WordType.SPY))
 
     def get_clue(self):
         invalid_words = self._get_invalid_words()
