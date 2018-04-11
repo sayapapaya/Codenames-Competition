@@ -1,7 +1,7 @@
 import random
 from nltk.stem import WordNetLemmatizer
 from demo_bot import RandomBot
-"""TODO[2]: import your bot"""
+"""TODO[2]: Import your bot from demo_bot."""
 
 GAME_WORDS_FILEPATH = "data/game_words.txt"
 VOCAB_FILEPATH = "data/vocab.txt"
@@ -143,10 +143,12 @@ class Codenames(object):
         print('')
 
     def print_remaining_words(self):
-        return
-        print('remaining p1 words:\n' + '\n'.join(w for w, guessed in self.p1_words.items() if not guessed))
-        print('remaining p2 words:\n' + '\n'.join(w for w, guessed in self.p2_words.items() if not guessed))
-        print('spy word: %s' % self.spy_word)
+        print('remaining p1 words:\n' + '\n'.join(w for w, guessed in self.game_board if not guessed and
+                                                  self.game_board[guessed] == WordType.P1))
+        print('remaining p2 words:\n' + '\n'.join(w for w, guessed in self.game_board if not guessed and
+                                                  self.game_board[guessed] == WordType.P2))
+        print('spy word:\n' + '\n'.join(w for w, guessed in self.game_board if not guessed and
+                                                  self.game_board[guessed] == WordType.P2))
 
     def get_clue(self):
         invalid_words = self._get_invalid_words()
@@ -184,15 +186,8 @@ class Codenames(object):
         self.bot_1.update(self.current_player == 0, clue, n_words, guesses)
         self.bot_2.update(self.current_player == 1, clue, n_words, guesses)
 
-# TODO:
-# 1. Specify setup requirements (python 3, NLTK )
-# doc strings to the sample bot code
-# print the guesses out at the end of the game
-# some more play testing
-# double check the API to see if all the components make sense.
-# write instructions and send it out to the players.
 if __name__ == '__main__':
-    """TODO[3]: instantiate your bot here"""
+    """TODO[3]: Instantiate your bot here, in place of RandomBot."""
     game = Codenames(RandomBot, RandomBot)
     game.run()
 
