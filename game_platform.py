@@ -1,6 +1,7 @@
 import random
 from nltk.stem import WordNetLemmatizer
 from demo_bot import RandomBot
+"""TODO[2]: import your bot"""
 
 GAME_WORDS_FILEPATH = "data/game_words.txt"
 VOCAB_FILEPATH = "data/vocab.txt"
@@ -73,7 +74,12 @@ class Codenames(object):
         while True:
             self.print_board()
             is_game_over = False
-            clue, n_words = self.get_clue()
+            clue, n_words, valid_clue = self.get_clue()
+            if not valid_clue:
+                print('Invalid clue given by player %s, skipping turn' % (self.current_player + 1))
+                self.current_player = 1 - self.current_player
+                continue
+
             print('For player %s, clue is "%s" for %d words' % (self.current_player + 1, clue, n_words))
 
             guesses = []
@@ -146,13 +152,13 @@ class Codenames(object):
         invalid_words = self._get_invalid_words()
         valid_words = set([word for word in self.vocab if word not in invalid_words])
 
-        while True:
-            if self.current_player == 0:
-                clue, num_words = self.bot_1.getClue(invalid_words)
-            else:
-                clue, num_words = self.bot_2.getClue(invalid_words)
-            if clue in valid_words and isinstance(num_words, int) and 0 <= num_words <= Codenames.P1_WORDS:
-                return clue, num_words
+        if self.current_player == 0:
+            clue, num_words = self.bot_1.getClue(invalid_words)
+        else:
+            clue, num_words = self.bot_2.getClue(invalid_words)
+
+        valid_clue = clue in valid_words and isinstance(num_words, int) and 0 <= num_words <= Codenames.P1_WORDS
+        return clue, num_words, valid_clue
 
     def print_guess_outcome(self, guess_outcome, guess):
         if guess_outcome == self.current_player:
@@ -178,8 +184,15 @@ class Codenames(object):
         self.bot_1.update(self.current_player == 0, clue, n_words, guesses)
         self.bot_2.update(self.current_player == 1, clue, n_words, guesses)
 
-
+# TODO:
+# 1. Specify setup requirements (python 3, NLTK )
+# doc strings to the sample bot code
+# print the guesses out at the end of the game
+# some more play testing
+# double check the API to see if all the components make sense.
+# write instructions and send it out to the players.
 if __name__ == '__main__':
+    """TODO[3]: instantiate your bot here"""
     game = Codenames(RandomBot, RandomBot)
     game.run()
 
