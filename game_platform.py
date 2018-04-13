@@ -7,7 +7,7 @@ GAME_WORDS_FILEPATH = "data/game_words.txt"
 VOCAB_FILEPATH = "data/vocab.txt"
 
 
-class WordType():
+class WordType(object):
     P1 = 0
     P2 = 1
     NEUTRAL = 2
@@ -23,15 +23,24 @@ class Codenames(object):
     NEUTRAL_WORDS = 7
 
     def __init__(self, bot_1, bot_2):
+        # either 0 or 1
         self.current_player = 0
+        # map of word to WordType, and map of word to whether it has been guessed
         self.game_board, self.game_state = self._create_game_board()
+        # list of allowed vocab words
         self.vocab = Codenames._read_words(VOCAB_FILEPATH)
+        # ordered words from self.game_board, just for display
         self.board_layout = list(self.game_board)
         random.shuffle(self.board_layout)
 
         self.bot_1 = bot_1(list(self.vocab), self.game_board, 0)
         self.bot_2 = bot_2(list(self.vocab), self.game_board, 1)
         self.lemmatizer = WordNetLemmatizer()
+
+    @staticmethod
+    def _read_words(filename):
+        with open(filename) as f:
+            return [line.strip() for line in f]
 
     @staticmethod
     def _create_game_board():
@@ -113,11 +122,6 @@ class Codenames(object):
             self.update_bots(clue, n_words, guesses)
             self.current_player = 1 - self.current_player
 
-    @staticmethod
-    def _read_words(filename):
-        with open(filename) as f:
-            return [line.strip() for line in f]
-
     def print_board(self):
         print('')
 
@@ -179,15 +183,15 @@ class Codenames(object):
             return True, "Player 1 wins!!!"
         elif all(self.game_state[word] for word, owner in self.game_board.items() if owner == WordType.P2):
             return True, "Player 2 wins!!!"
-        else:
-            return False, ""
+        return False, ""
 
     def update_bots(self, clue, n_words, guesses):
         self.bot_1.update(self.current_player == 0, clue, n_words, guesses)
         self.bot_2.update(self.current_player == 1, clue, n_words, guesses)
 
+
 if __name__ == '__main__':
-    """TODO[3]: Instantiate your bot here, in place of RandomBot."""
+    """TODO[3]: Specify your bot here, in place of RandomBot."""
     game = Codenames(RandomBot, RandomBot)
     game.run()
 
